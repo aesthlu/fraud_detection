@@ -23,3 +23,17 @@ threshold = business_threshold(y_test, probs)
 print("ROC-AUC:", roc)
 print("PR-AUC:", pr)
 print("Optimal threshold:", threshold)
+
+
+import joblib
+
+if __name__ == "__main__":
+    df = load_data("data/creditcard.csv")
+    df, scaler = preprocess(df)
+    df = build_features(df)
+    FEATURES = df.drop("Class", axis=1).columns.tolist()
+    train, test = temporal_split(df)
+
+    model = train_xgb(train[FEATURES], train["Class"])
+
+    joblib.dump(model, "models/fraud_model.pkl")

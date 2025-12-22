@@ -9,3 +9,7 @@ joblib
 pyyaml
 scipy
 shap
+mlflow
+fastapi 
+uvicorn
+joblib
