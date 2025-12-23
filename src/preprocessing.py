@@ -13,3 +13,11 @@ def preprocess(df: pd.DataFrame):
     df["Amount_scaled"] = scaler.fit_transform(df[["Amount_log"]])
 
     return df, scaler
+
+def preprocess_inference(df, scaler):
+    df = df.copy()
+
+    df["Amount_log"] = np.log1p(df["Amount"])
+    df["Amount_scaled"] = scaler.transform(df[["Amount_log"]])
+
+    return df

@@ -1,27 +1,29 @@
 from fastapi import FastAPI
 import joblib
 import pandas as pd
-from src.ingestion import load_data
-from src.preprocessing import preprocess
+from src.preprocessing import preprocess_inference
 from src.features import build_features
 
 app = FastAPI(title="Fraud Detection API")
 
 model = joblib.load("models/fraud_model.pkl")
-
-df = load_data("data/creditcard.csv")
-df, scaler = preprocess(df)
-df = build_features(df)
-FEATURES = df.drop("Class", axis=1).columns.tolist()
+scaler = joblib.load("models/amount_scaler.pkl")
+FEATURES = joblib.load("models/features.pkl")
+threshold = joblib.load("models/optimal_threshold.pkl")
 
 @app.post("/predict")
 def predict(transaction: dict):
     df = pd.DataFrame([transaction])
+
+    df = preprocess_inference(df, scaler)
+    df = build_features(df)
+
     proba = model.predict_proba(df[FEATURES])[0, 1]
 
     return {
         "fraud_probability": float(proba),
-        "is_fraud": int(proba > 0.2)
+        "is_fraud": int(proba > threshold)
     }
+
 
 # uvicorn api.main:app --reload

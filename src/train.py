@@ -45,3 +45,5 @@ def train_xgb(X, y):
         mlflow.sklearn.log_model(model, "model")
 
     return model
+
+# mlflow ui

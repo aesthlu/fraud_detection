@@ -23,7 +23,7 @@ threshold = business_threshold(y_test, probs)
 print("ROC-AUC:", roc)
 print("PR-AUC:", pr)
 print("Optimal threshold:", threshold)
-
+#
 
 import joblib
 
@@ -37,3 +37,6 @@ if __name__ == "__main__":
     model = train_xgb(train[FEATURES], train["Class"])
 
     joblib.dump(model, "models/fraud_model.pkl")
+    joblib.dump(scaler, "models/amount_scaler.pkl")
+    joblib.dump(FEATURES, "models/features.pkl")
+    joblib.dump(threshold, "models/optimal_threshold.pkl")
