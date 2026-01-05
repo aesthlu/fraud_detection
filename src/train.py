@@ -1,4 +1,3 @@
-
 def temporal_split(df, split_ratio=0.7):
     split_time = df["Time"].quantile(split_ratio)
 
@@ -6,6 +5,12 @@ def temporal_split(df, split_ratio=0.7):
     test  = df[df["Time"] > split_time]
 
     return train, test
+
+def RUS_SMOTE(X, y):
+    from imblearn.combine import SMOTEENN
+    smote_enn = SMOTEENN(random_state=42)
+    X_res, y_res = smote_enn.fit_resample(X, y)
+    return X_res, y_res
 
 from sklearn.linear_model import LogisticRegression
 

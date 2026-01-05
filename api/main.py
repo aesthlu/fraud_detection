@@ -11,6 +11,10 @@ scaler = joblib.load("models/amount_scaler.pkl")
 FEATURES = joblib.load("models/features.pkl")
 threshold = joblib.load("models/optimal_threshold.pkl")
 
+@app.get("/health")
+def health():
+    return {"status": "ok"}
+
 @app.post("/predict")
 def predict(transaction: dict):
     df = pd.DataFrame([transaction])

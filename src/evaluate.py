@@ -1,3 +1,5 @@
+import mlflow
+
 from sklearn.metrics import (
     roc_auc_score,
     average_precision_score,
@@ -10,6 +12,10 @@ def evaluate_model(model, X_test, y_test):
 
     roc = roc_auc_score(y_test, probs)
     pr  = average_precision_score(y_test, probs)
+    
+    with mlflow.start_run():
+        mlflow.log_metric("roc_auc", roc)
+        mlflow.log_metric("pr_auc", pr)
 
     return roc, pr, probs
 
