@@ -8,16 +8,30 @@ from sklearn.metrics import (
 import numpy as np
 
 def evaluate_model(model, X_test, y_test):
+    import matplotlib.pyplot as plt
+
     probs = model.predict_proba(X_test)[:, 1]
 
-    roc = roc_auc_score(y_test, probs)
-    pr  = average_precision_score(y_test, probs)
-    
-    with mlflow.start_run():
-        mlflow.log_metric("roc_auc", roc)
-        mlflow.log_metric("pr_auc", pr)
+    roc_auc = roc_auc_score(y_test, probs)
+    ap = average_precision_score(y_test, probs)
 
-    return roc, pr, probs
+    with mlflow.start_run(run_name="xgboost_evaluation"):
+
+        mlflow.log_metric("roc_auc", roc_auc)
+        mlflow.log_metric("average_precision", ap)
+
+        # Precision-Recall Curve
+        precision, recall, _ = precision_recall_curve(y_test, probs)
+
+        plt.figure()
+        plt.plot(recall, precision)
+        plt.xlabel("Recall")
+        plt.ylabel("Precision")
+        plt.title("Precision-Recall Curve")
+        plt.savefig("pr_curve.png")
+
+        mlflow.log_artifact("pr_curve.png")
+    return roc_auc, ap, probs
 
 def business_threshold(y_true, probs, cost_fn=100, cost_fp=1):
     thresholds = np.linspace(0.01, 0.9, 100)

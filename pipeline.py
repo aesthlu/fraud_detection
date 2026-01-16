@@ -4,10 +4,12 @@ from src.features import build_features
 from src.train import temporal_split, train_xgb, RUS_SMOTE
 from src.evaluate import evaluate_model, business_threshold
 import mlflow
+from src.config import EXPERIMENT_NAME
+
 
 mlflow.end_run()
 # Set MLflow experiment. Otherwise, runs go to "Default" experiment
-mlflow.set_experiment("fraud_detection_xgboost")
+mlflow.set_experiment(EXPERIMENT_NAME)
 
 df = load_data("data/creditcard.csv")
 df, scaler = preprocess(df)

@@ -27,27 +27,27 @@ import mlflow
 import mlflow.sklearn
 
 def train_xgb(X, y):
+    from src.config import XGB_PARAMS
+
     scale_pos_weight = (y == 0).sum() / (y == 1).sum()
 
-    with mlflow.start_run():
+    with mlflow.start_run(run_name="xgboost_training"):
+
+        mlflow.log_params(XGB_PARAMS)
+
         model = XGBClassifier(
-            n_estimators=200,
-            max_depth=5,
-            learning_rate=0.05,
-            subsample=0.8,
-            colsample_bytree=0.8,
-            scale_pos_weight=scale_pos_weight,
-            eval_metric="aucpr"
+            **XGB_PARAMS,
+            scale_pos_weight=scale_pos_weight
         )
 
         model.fit(X, y)
 
-        mlflow.log_param("n_estimators", 200)
-        mlflow.log_param("max_depth", 5)
-        mlflow.log_param("learning_rate", 0.05)
+        mlflow.log_param("n_estimators", XGB_PARAMS["n_estimators"])
+        mlflow.log_param("max_depth", XGB_PARAMS["max_depth"])
+        mlflow.log_param("learning_rate", XGB_PARAMS["learning_rate"])
         mlflow.log_param("scale_pos_weight", scale_pos_weight)
 
-        mlflow.sklearn.log_model(model, "model")
+        mlflow.sklearn.log_model(sk_model=model, name="fraud_model")
 
     return model
 

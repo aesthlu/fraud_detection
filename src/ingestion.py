@@ -17,8 +17,8 @@ def basic_data_checks(df: pd.DataFrame):
     print("\n=== FRAUD RATIO ===")
     print(df["Class"].value_counts(normalize=True))
 
-    print("\n=== AMOUNT STATS ===")
-    print(df["Amount"].describe())
+    print("\n=== GENERAL STATS ===")
+    print(df.describe())
 
     print("\n=== TIME RANGE ===")
     print(df["Time"].min(), "→", df["Time"].max())
